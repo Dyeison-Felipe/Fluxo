@@ -1,26 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EnvConfigService } from './shared/infrastructure/env-config/env-config.service';
+import { applyGlobalConfig } from './global-config';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { initializeTransactionalContext, StorageDriver } from 'typeorm-transactional';
 
 async function bootstrap() {
   
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
   const envConfigService = app.get(EnvConfigService);
 
-  const config = new DocumentBuilder()
-    .setTitle('Fluxo-api')
-    .setDescription('Documentação da API')
-    .setVersion('1.0')
-    .addTag('cats')
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  await applyGlobalConfig(app, envConfigService);
 
-  SwaggerModule.setup('api', app, documentFactory);
   await app.listen(envConfigService.getPort(), '0.0.0.0');
 }
 bootstrap();

@@ -2,18 +2,25 @@ import { Module } from "@nestjs/common";
 import { RoleSchema } from "./role.schema";
 import { getDataSourceToken, TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { CreateUseCase } from "../application/create.usecase";
 import { RoleRepository } from "../domain/role.repository";
 import { RoleController } from "./role.controller";
 import { RolesRepositoryImpl } from "./role.repository";
-import { FindAllUseCase } from "../application/find-all-paginate.usecase";
-import { UpdateUseCase } from "../application/update.usecase";
+import { FindAllRoleUseCase } from "../application/find-all-paginate-role.usecase";
+import { UpdateRoleUseCase } from "../application/update-role.usecase";
+import { DeleteRoleUseCase } from "../application/delete-role.usecase";
+import { CreateRoleUseCase } from "../application/create-role.usecase";
+
+export const ROLE_REPOSITORY='ROLE_REPOSITORY'
 
 @Module({
   imports: [TypeOrmModule.forFeature([RoleSchema])],
   controllers: [RoleController],
   providers: [
-    CreateUseCase,
+    CreateRoleUseCase,
+    FindAllRoleUseCase,
+    UpdateRoleUseCase,
+    DeleteRoleUseCase,
+
     {
       provide: RolesRepositoryImpl,
       useFactory: (dataSource: DataSource) => {
@@ -24,26 +31,38 @@ import { UpdateUseCase } from "../application/update.usecase";
       inject: [getDataSourceToken()],
     },
     {
-      provide: CreateUseCase,
+      provide: ROLE_REPOSITORY, // Mapeia a interface para a implementação
+      useExisting: RolesRepositoryImpl, // Indica que já existe um provider com a implementação
+    },
+    {
+      provide: CreateRoleUseCase,
       useFactory: (repository: RoleRepository) => {
-        return new CreateUseCase(repository);
+        return new CreateRoleUseCase(repository);
       },
       inject: [RolesRepositoryImpl],
     },
     {
-      provide: FindAllUseCase,
+      provide: FindAllRoleUseCase,
       useFactory: (repository: RoleRepository) => {
-        return new FindAllUseCase(repository);
+        return new FindAllRoleUseCase(repository);
       },
-      inject: [RolesRepositoryImpl],
+      inject: [ROLE_REPOSITORY],
     },
     {
-      provide: UpdateUseCase,
+      provide: UpdateRoleUseCase,
       useFactory: (repository: RoleRepository) => {
-        return new UpdateUseCase(repository);
+        return new UpdateRoleUseCase(repository);
       },
-      inject: [RolesRepositoryImpl],
+      inject: [ROLE_REPOSITORY],
+    },
+    {
+      provide: DeleteRoleUseCase,
+      useFactory: (repository: RoleRepository) => {
+        return new DeleteRoleUseCase(repository);
+      },
+      inject: [ROLE_REPOSITORY],
     },
   ],
+  exports:[ROLE_REPOSITORY],
 })
 export class RoleModule { }

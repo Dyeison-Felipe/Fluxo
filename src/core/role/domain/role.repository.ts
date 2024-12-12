@@ -1,5 +1,6 @@
 import { IPaginationOptions, Pagination } from "nestjs-typeorm-paginate";
 import { RoleEntity } from "./role.entity";
+import { Repository } from "typeorm";
 
 export interface RoleRepository {
   create(role: RoleEntity): Promise<RoleEntity>;
@@ -8,5 +9,9 @@ export interface RoleRepository {
 
   findById(id: number): Promise<RoleEntity>;
 
-  update(id: number): Promise<RoleEntity>;
+  existName(name: string): Promise<boolean>;
+
+  update(updateRoleDto: RoleEntity): Promise<RoleEntity>;
+
+  delete(id: number): Promise<void>;
 }

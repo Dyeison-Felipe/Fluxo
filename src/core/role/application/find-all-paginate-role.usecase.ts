@@ -4,6 +4,7 @@ import { RoleOutput } from "src/shared/application/dtos/output/role-output";
 import { RoleEntity } from "../domain/role.entity";
 import { PaginationInput } from "src/shared/application/pagination/pagination";
 import { IPaginationOptions, Pagination } from "nestjs-typeorm-paginate";
+import { Injectable } from "@nestjs/common";
 
 type Input = {
   page: number;
@@ -12,7 +13,8 @@ type Input = {
 
 type Output = Pagination<RoleOutput>;
 
-export class FindAllUseCase implements UseCase<Input, Output> {
+@Injectable()
+export class FindAllRoleUseCase implements UseCase<Input, Output> {
 
   constructor(private readonly roleRepository: RoleRepository) { }
 

@@ -8,17 +8,28 @@ export class RolesRepositoryImpl implements RoleRepository {
 
   constructor(private readonly rolesRepository: Repository<RoleSchema>) { }
 
+  async delete(id: number): Promise<void> {
+    await this.rolesRepository.softDelete(id)
+
+  }
+
+  async existName(name: string): Promise<boolean> {
+    const existName = await this.rolesRepository.existsBy({name});
+
+    return existName;
+  }
+
   async findById(id: number): Promise<RoleEntity> {
     const existId = await this.rolesRepository.findOneBy({id})
 
     return existId;
   }
 
-  async update(id: number): Promise<RoleEntity> {
+  async update(entity: RoleEntity): Promise<RoleEntity> {
 
-    const roleId = await this.rolesRepository.save({id})
+    const role = await this.rolesRepository.save(entity)
 
-    return roleId;
+    return role;
   }
 
   async findAllPaginated(options: IPaginationOptions): Promise<Pagination<RoleEntity>> {

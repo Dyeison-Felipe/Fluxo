@@ -19,7 +19,7 @@ export class CreateTableUser1732834151991 implements MigrationInterface {
             },
             {
               name: 'username',
-              type: 'int',
+              type: 'varchar',
               length: '50',
               isNullable: false,
               isUnique: true
@@ -38,13 +38,8 @@ export class CreateTableUser1732834151991 implements MigrationInterface {
               isUnique: true
             },
             {
-              name: 'rolesId',
+              name: 'roleId',
               type: 'int',
-              isNullable: false,
-            },
-            {
-              name: 'active',
-              type: 'bit',
               isNullable: false,
             },
             {
@@ -66,7 +61,7 @@ export class CreateTableUser1732834151991 implements MigrationInterface {
           ],
           foreignKeys: [
             {
-              columnNames: ['rolesId'],
+              columnNames: ['roleId'],
               referencedTableName: 'roles',
               referencedColumnNames: ['id'],
             },

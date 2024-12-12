@@ -1,12 +1,12 @@
+import { RoleEntity } from "src/core/role/domain/role.entity";
 import { AuditableEntity, AuditableEntityProps } from "src/shared/infrastructure/entities/auditable.entity";
 
 type UserEntityProps = AuditableEntityProps & {
-  id: number;
+  id?: number;
   username: string;
   email: string;
   password: string;
-  rolesId: number;
-  active: number;
+  roleId: RoleEntity;
 }
 
 export class UserEntity extends AuditableEntity {
@@ -14,8 +14,7 @@ export class UserEntity extends AuditableEntity {
   username: string;
   email: string;
   password: string;
-  rolesId: number;
-  active: number;
+  roleId: RoleEntity;
 
   constructor(props: UserEntityProps) {
     super(props);
@@ -23,7 +22,6 @@ export class UserEntity extends AuditableEntity {
     this.username = props.username;
     this.email = props.email;
     this.password = props.password;
-    this.rolesId = props.rolesId;
-    this.active = props.active;
+    this.roleId = props.roleId;
   }
 }
